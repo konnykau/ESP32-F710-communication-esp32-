@@ -33,9 +33,9 @@ struct wifi_controller_input{
   void wifi_setup(const char* ssid ,const char* password);
   void wifi_setup(const char* ssid ,const char* password,const IPAddress ip,const IPAddress gateway,const IPAddress subnet);
   void READ();
-  void Debug_Read();//only use for debug!!!use it except in special cases!!!
+  void Debug_Read();//only use for debug!!!Don't use it except in special cases!!!
   void input(String key,String state);
-  void print_state();//only use for debug!!!use it except in special cases!!!
+  void print_state();//only use for debug!!!Don't use it except in special cases!!!
 
 
 };
