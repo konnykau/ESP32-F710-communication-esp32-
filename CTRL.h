@@ -32,10 +32,10 @@ struct wifi_controller_input{
   }
   void wifi_setup(const char* ssid ,const char* password);
   void wifi_setup(const char* ssid ,const char* password,const IPAddress ip,const IPAddress gateway,const IPAddress subnet);
-  void READ();
-  void Debug_Read();//only use for debug!!!Don't use it except in special cases!!!
+  void READ(void (*loop_ptr)(void));
+  void Debug_Read();//only use for debug!!!Don`t use it except in special cases!!!
   void input(String key,String state);
-  void print_state();//only use for debug!!!Don't use it except in special cases!!!
+  void print_state();//only use for debug!!!Don`t use it except in special cases!!!
 
 
 };
@@ -48,7 +48,7 @@ inline void wifi_controller_input::wifi_setup(const char* ssid ,const char* pass
     Serial.print("Connecting to ");
     Serial.println(ssid);
     WiFi.begin(ssid, password);//アクセスポイントに接続
-    while (WiFi.status() != WL_CONNECTED && WiFi.status() != WL_IDLE_STATUS) {//接続が完了しない場合"・"を打って待機
+    while (WiFi.status() != WL_CONNECTED) {//接続が完了しない場合"・"を打って待機
         delay(500);
         Serial.print(".");
     }
@@ -72,7 +72,7 @@ inline void wifi_controller_input::wifi_setup(const char* ssid ,const char* pass
       Serial.println("Failed to configure!");
     }
     WiFi.begin(ssid, password);//アクセスポイントに接続
-    while (WiFi.status() != WL_CONNECTED && WiFi.status() != WL_IDLE_STATUS) {//接続が完了しない場合"・"を打って待機
+    while (WiFi.status() != WL_CONNECTED) {//接続が完了しない場合"・"を打って待機
         delay(500);
         Serial.print(".");
     }
@@ -86,7 +86,7 @@ inline void wifi_controller_input::wifi_setup(const char* ssid ,const char* pass
     server.begin();//サーバー開始
 }
 
-inline void wifi_controller_input::READ(){
+inline void wifi_controller_input::READ(void (*loop_ptr)(void)){
   WiFiClient client = server.available();//サーバーに接続され、読み取り可能なデータがあるクライアントを取得
   String Key = "";
   String state = "";
@@ -106,7 +106,7 @@ inline void wifi_controller_input::READ(){
               if(c_ =='\n'){
                 // Serial.println(state);
                 this->input(Key,state);
-                loop_in_ctrl();                
+                loop_ptr();                
                 not_read_state = false;
                 Key = "";
                 state = "";
@@ -126,7 +126,7 @@ inline void wifi_controller_input::READ(){
   }
 }
 
-inline void wifi_controller_input::Debug_Read(){//only use for debug!!!use it except in special cases!!!
+inline void wifi_controller_input::Debug_Read(){//only use for debug!!!Don't use it except in special cases!!!
   WiFiClient client = server.available();//サーバーに接続され、読み取り可能なデータがあるクライアントを取得
   String Key = "";
   String state = "";
@@ -238,7 +238,7 @@ inline void wifi_controller_input::input(String key,String state){
 
 }
 
-inline void wifi_controller_input::print_state(){//only use for debug!!!use it except in special cases!!!
+inline void wifi_controller_input::print_state(){//only use for debug!!!Don't use it except in special cases!!!
   Serial.println("");
   Serial.println("");
   Serial.println("");
